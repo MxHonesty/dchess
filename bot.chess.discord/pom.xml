@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>bot.chess.discord</groupId>
+  <artifactId>bot.chess.discord</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+<repositories>
+	    <repository>
+		    <id>jcenter</id>
+		    <name>jcenter-bintray</name>
+		    <url>https://jcenter.bintray.com</url>
+		</repository>
+		
+		<repository>
+		    <id>scijava.public</id>
+		    <url>https://maven.scijava.org/content/groups/public</url>
+ 		 </repository>
+ 		 
+ 		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+  		</repository>
+	</repositories>
+
+<dependencies>
+    <!-- https://mvnrepository.com/artifact/net.dv8tion/JDA -->
+	  <dependency>
+	    <groupId>net.dv8tion</groupId>
+	    <artifactId>JDA</artifactId>
+	    <version>4.1.1_101</version>
+	    <scope>compile</scope>
+	</dependency>
+	
+	<!--  https://imagej.net/Maven.html#POM_and_directory_structure -->
+	<dependency>
+	    <groupId>net.imagej</groupId>
+	    <artifactId>ij</artifactId>
+	    <version>1.45b</version>
+  	</dependency>
+  	
+  	<!-- https://github.com/bhlangonijr/chesslib -->
+  	<dependency>
+	  <groupId>com.github.bhlangonijr</groupId>
+	  <artifactId>chesslib</artifactId>
+	  <version>1.1.20</version>
+	</dependency>
+</dependencies>
+
+</project>
