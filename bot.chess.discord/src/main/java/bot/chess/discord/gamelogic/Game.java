@@ -35,15 +35,7 @@ public class Game {
 	    //System.out.println(board.toString());
 	    
         MoveList moves = MoveGenerator.generateLegalMoves(board);
-        //System.out.println("Legal moves: " + moves);
         
-        //Move m = new Move(Square.E2, Square.E4);
-        //if(moves.contains(m)) {
-        //	System.out.println("VALID");
-        //}
-        //else System.out.println("INVALID");
-	    
-	    //Square.fromValue("E2") returneaza patratul E2
 	    //board.doMove(new Move(Square.fromValue("E2"), Square.E4)); Executa mutarea determinata de inceput
 	    // si destinatie indiferent daca este legala sau nu
 	    
@@ -52,6 +44,8 @@ public class Game {
         	System.out.println("VALID");
         }
         else System.out.println("INVALID");
+        
+        System.out.println(board.toString());
        
     }
 
