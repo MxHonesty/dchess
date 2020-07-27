@@ -7,6 +7,7 @@ import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -20,13 +21,15 @@ public class ChessListener extends ListenerAdapter{
 	int terminat = 0;
 	String lastmove;
 	int acceptat = 0;
+	DiscordLogic d = new DiscordLogic();
 	
 	Board board = new Board();
 	
-	public ChessListener(MessageChannel channel, User adversar1, User adversar2) {	//initializarea obiectului cu valorile
+	public ChessListener(MessageChannel channel, User adversar1, User adversar2, DiscordLogic d) {	//initializarea obiectului cu valorile
         this.adversar1 = adversar1;
         this.adversar2 = adversar2;
         this.channel = channel;
+        this.d = d;
         System.out.println("CHESSLISTENER INIT");
         //System.out.println(board.toString());
         }
@@ -61,7 +64,8 @@ public class ChessListener extends ListenerAdapter{
 						
 					}
 					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {
-						System.out.println(adversar1.getName() + " a renuntat!");
+						channel.sendMessage(adversar1.getName() + " a renuntat!").queue();
+						d.canale.remove(channel);					//elimina canalul din lista
 						event.getJDA().removeEventListener(this); // stop listening
 					}
 				}
@@ -82,7 +86,8 @@ public class ChessListener extends ListenerAdapter{
 
 				}
 					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {
-						System.out.println(adversar2.getName() + " a renuntat!");
+						channel.sendMessage(adversar2.getName() + " a renuntat!").queue();
+						d.canale.remove(channel);					//elimina canalul din lista
 						event.getJDA().removeEventListener(this); // stop listening
 					}
 				}
@@ -120,6 +125,18 @@ public class ChessListener extends ListenerAdapter{
 	        	return true;
 	        }
 	        else return false;
+	}
+	
+	public void Embedd_Constructor(MessageReceivedEvent event)
+	{
+		EmbedBuilder table = new EmbedBuilder(); //Builderul de embed
+		table.setColor(0x0576ff);
+		table.setImage("https://picsum.photos/800/600"); //placeholder pt imaginea cu tabla
+		
+		event.getChannel().sendTyping().queue();
+		event.getChannel().sendMessage(table.build()).queue(); //construim tabla
+		
+		table.clear(); //stergem tabla pentru conservarea resurselor
 	}
 	
 	     
