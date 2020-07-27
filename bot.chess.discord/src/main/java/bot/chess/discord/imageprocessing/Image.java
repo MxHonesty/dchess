@@ -1,75 +1,114 @@
 package bot.chess.discord.imageprocessing;
 
 import java.awt.*;
-import java.awt.color.*;
 import java.awt.image.*;
 import java.io.*;
 import javax.imageio.*;
-
-//not permanent
 import javax.swing.*;
 
 
 public class Image {
+	
+	BufferedImage finalImage;
 	Assets assets;
     public char[][] table;
+    
 
+    //Contructors
+	public Image(int skinNumber, int pieceScale){
+		
+		assets = new Assets(skinNumber, pieceScale);
+	    table = new char[8][8];
+	}
 	public Image(){
-		 assets = new Assets(1);
-		 table = new char[8][8];
+		assets = new Assets(1, 100);
+	    table = new char[8][8];
 	}
 	
-
-	
-	public void generateTable() {
+	public BufferedImage renderTabel() {
 		
 	    int drawPozitionX,drawPozitionY;
 	    
-		
-		BufferedImage finalImage = new BufferedImage(assets.chessTable.getHeight(), assets.chessTable.getWidth(), BufferedImage.TYPE_INT_ARGB);
+		finalImage = new BufferedImage(assets.chessTable.getHeight(), assets.chessTable.getWidth(), BufferedImage.TYPE_INT_ARGB);
 	    Graphics2D g = finalImage.createGraphics();
 	    g.drawImage(assets.chessTable.img, 0, 0, null);
 	   
 	   
 	    for(int f1 = 0; f1 < 8 ; f1++) {
 	        for(int f2 = 0; f2 < 8 ; f2++) {
-	        	BufferedImage imageToDraw = assets.knightBlack.img;
+	        	ImageComponent componentToDraw = findAsset(table[f2][f1]);
 	        	
-	        	drawPozitionX =  assets.squareSize * f1 + assets.topLeftRoot.x ;
-	        	drawPozitionY =  assets.squareSize * f2 + assets.topLeftRoot.y ;
-	        	
-	    	    g.drawImage(imageToDraw ,drawPozitionX,drawPozitionY, null);
+	        	if (componentToDraw != null) {
+		        	BufferedImage imageToDraw = componentToDraw.img;
+		        	
+		        	drawPozitionX =  assets.squareSize * f1 + assets.topLeftRoot.x + (assets.squareSize -imageToDraw.getWidth())/2 ;
+		        	drawPozitionY =  assets.squareSize * f2 + assets.topLeftRoot.y + (assets.squareSize -imageToDraw.getHeight())/2 ; 
+		        	
+		    	    g.drawImage(imageToDraw , drawPozitionX, drawPozitionY , null);
+	        	}
+	        	//else {System.out.print(f2 + " " + f1 + '\n') ; }
 		    }
-		    
 	    }
-	    
 	    g.dispose();
-
 	    
-        displayImage(finalImage);
+	    return finalImage;
 	}
 	
+	public void updateTable( char[][] updatedTable) {
+	    for(int f1 = 0; f1 < 8 ; f1++) {
+	        for(int f2 = 0; f2 < 8 ; f2++) {
+	        	table[f1][f2] = updatedTable[f1][f2];
+		    }
+	    }
+	}
 	
+	private ImageComponent findAsset(char piece) {
+		switch(piece) {
+		//White pieces
+		  case ' ':	
+			  return null;
+		  case 'r':	
+			  return assets.rookBlack;
+		  case 'n':	
+			  return assets.knightBlack;
+		  case 'b':	
+			  return assets.bishopBlack;
+		  case 'q':	
+			  return assets.queenBlack;
+		  case 'k':	
+			  return assets.kingBlack;
+		  case 'p':	
+			  return assets.pawnBlack;
+		//Black  pieces
+		  case 'R':	
+			  return assets.rookWhite;
+		  case 'N':	
+			  return assets.knightWhite;
+		  case 'B':	
+			  return assets.bishopWhite;
+		  case 'Q':	
+			  return assets.queenWhite;
+		  case 'K':	
+			  return assets.kingWhite;
+		  case 'P':	
+			  return assets.pawnWhite;
+		  default:
+			  return assets.error;
+		}
+	}
 	
-	
-	private static void displayImage(BufferedImage img) {
-
+	public void displayImage(BufferedImage img) {
 		JLabel picLabel = new JLabel(new ImageIcon(img));
 		JPanel jPanel = new JPanel();
 		jPanel.add(picLabel);
-		
 		JFrame f = new JFrame();
 		f.setSize(new Dimension(img.getWidth(), img.getHeight() +50) );
 		f.add(jPanel);
 		f.setVisible(true);
-		
 	}
-	
-	
 }
 
 class Assets {
-	float relativeScale = 85;
 	int tableSize = 0;
 	int squareSize = 0;
 		
@@ -92,8 +131,11 @@ class Assets {
 	ImageComponent queenBlack;
 	ImageComponent kingBlack;
 	ImageComponent pawnBlack;
+	
+	//Other
+	ImageComponent error;
 
-	public Assets(int skinNumber) {
+	public Assets(int skinNumber, int pieceScale) {
 		
 		Skin skin = new Skin(skinNumber);
 		
@@ -102,44 +144,44 @@ class Assets {
 		
 		tableSize = skin.bottomRightRoot.x - skin.topLeftRoot.x; 
 		squareSize = tableSize/8;
-		int scale =  Math.round(squareSize * relativeScale /100);
+		
+		int scale =  Math.round(squareSize * pieceScale /100);
 
 		//Assets
 		chessTable = new ImageComponent(skin.chessTablePath);
 		//White
-		rookWhite = null;
-		knightWhite = null;
-		bishopWhite = null;
-		queenWhite = null;
-		kingWhite = null;
-		pawnWhite = null;
+		rookWhite = scalePiece(new ImageComponent(skin.rookWhitePath), scale );
+		knightWhite = scalePiece(new ImageComponent(skin.knightWhitePath), scale );
+		bishopWhite = scalePiece(new ImageComponent(skin.bishopWhitePath), scale );
+		queenWhite = scalePiece(new ImageComponent(skin.queenWhitePath), scale );
+		kingWhite = scalePiece(new ImageComponent(skin.kingWhitePath), scale );
+		pawnWhite = scalePiece(new ImageComponent(skin.pawnWhitePath), scale );
 		
 		//Black
-		rookBlack = null;
+		rookBlack = scalePiece(new ImageComponent(skin.rookBlackPath), scale );
 		knightBlack = scalePiece(new ImageComponent(skin.knightBlackPath), scale );
-		bishopBlack = null;
-		queenBlack = null;
-		kingBlack = null;
-		pawnBlack = null;
+		bishopBlack = scalePiece(new ImageComponent(skin.bishopBlackPath), scale );
+		queenBlack = scalePiece(new ImageComponent(skin.queenBlackPath), scale );
+		kingBlack = scalePiece(new ImageComponent(skin.kingBlackPath), scale );
+		pawnBlack = scalePiece(new ImageComponent(skin.pawnBlackPath), scale );
+		
+		error = scalePiece(new ImageComponent(skin.errorPath), scale );
 	}
+	
 	private ImageComponent scalePiece(ImageComponent piece ,int scale){
 		
        BufferedImage scaledPiece = null;
-       
         if (piece != null && piece.img != null) {
         	
         	scaledPiece = new BufferedImage(scale, scale, piece.img.getType());
-            
             Graphics2D graphics2D = scaledPiece.createGraphics();
             graphics2D.drawImage(piece.img, 0, 0, scale, scale, null);
             graphics2D.dispose();
         }
-        
         piece.img = scaledPiece;
         
 		return piece;
 	}
-
 }
 
 class Skin {
@@ -164,6 +206,7 @@ class Skin {
 	String kingBlackPath;
 	String pawnBlackPath;
 
+	String errorPath;
 	//Here is contained every path to every image used
 	public Skin(int selectedSkin) {
 
@@ -173,32 +216,39 @@ class Skin {
 			  	bottomRightRoot = new Vector2(405,405);
 
 			  	//Images
-				chessTablePath = "src/main/resources/chessboard.png";
+				chessTablePath = "src/main/resources/skin1/chessboard.png";
 				//White pieces
-				rookWhitePath = null;
-				knightWhitePath = null;
-				bishopWhitePath = null;
-				queenWhitePath = null;
-				kingWhitePath = null;
-				pawnWhitePath = null;
+				rookWhitePath = "src/main/resources/skin1/whiteRook.png";
+				knightWhitePath = "src/main/resources/skin1/whiteKnight.png";
+				bishopWhitePath = "src/main/resources/skin1/whiteBishop.png";
+				queenWhitePath = "src/main/resources/skin1/whiteQueen.png";
+				kingWhitePath = "src/main/resources/skin1/whiteKing.png";
+				pawnWhitePath = "src/main/resources/skin1/whitePawn.png";
 
 				//Black pieces
-				rookBlackPath = null;
-				knightBlackPath = "src/main/resources/horse.png";
-				bishopBlackPath = null;
-				queenBlackPath = null;
-				kingBlackPath = null;
+				rookBlackPath = "src/main/resources/skin1/blackRook.png";
+				knightBlackPath = "src/main/resources/skin1/blackKnight.png";
+				bishopBlackPath = "src/main/resources/skin1/blackBishop.png";
+				queenBlackPath = "src/main/resources/skin1/blackQueen.png";
+				kingBlackPath = "src/main/resources/skin1/blackKing.png";
+				pawnBlackPath = "src/main/resources/skin1/blackPawn.png";
 		    break;
 		  default:
 		}
+		
+		errorPath = "src/main/resources/error.png";
 	}
 }
-
 
 //This is a new component witch takes a path string and imports an image
 
 class ImageComponent extends Component {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	BufferedImage img;
 
     //Reading the image from disk
@@ -206,7 +256,7 @@ class ImageComponent extends Component {
        try {
           img = ImageIO.read(new File(path));
        } catch (IOException e) {
-	      System.out.print("ERROR READING IMAGE\n ");  
+	      System.out.print("ERROR READING IMAGE " + path);  
           e.printStackTrace();
        }
     }
@@ -250,7 +300,4 @@ class Vector2
         this.y = y;
     } 
     // Compare two vectors
-    public boolean equals(Vector2 other) {
-        return (this.x == other.x && this.y == other.y);
-    }
 }
