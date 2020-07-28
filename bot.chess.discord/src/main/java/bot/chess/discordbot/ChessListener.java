@@ -11,11 +11,11 @@ import com.github.bhlangonijr.chesslib.move.MoveList;
 
 import bot.chess.discord.imageprocessing.Image;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.utils.AttachmentOption;
 
 public class ChessListener extends ListenerAdapter{
 	
@@ -62,16 +62,16 @@ public class ChessListener extends ListenerAdapter{
 							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3)));						//executa mutarea
 							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
 							trimitereimagine(event);																				//trimite imaginea
+							verificari(event, adversar1);
 							sub=2;
 						} else {
-							channel.sendMessage("Mutare invalida").queue();
+							channel.sendMessage("Mutare Invalida").queue();
 						}
 						
 					}
 					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {
 						channel.sendMessage(adversar1.getName() + " a renuntat!").queue();
-						d.canale.remove(channel);					//elimina canalul din lista
-						event.getJDA().removeEventListener(this); // stop listening
+						stopjoc(event.getJDA()); // stop listening
 					}
 				}
 				
@@ -82,18 +82,17 @@ public class ChessListener extends ListenerAdapter{
 							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3)));						//executa mutarea
 							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
 							trimitereimagine(event);	
+							verificari(event, adversar2);
 							sub=1;
 							turn++;
 						} else {
-							channel.sendMessage("Mutare invalida").queue();
+							channel.sendMessage("Mutare Invalida").queue();
 						}
-						
 
 				}
 					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {
 						channel.sendMessage(adversar2.getName() + " a renuntat!").queue();
-						d.canale.remove(channel);					//elimina canalul din lista
-						event.getJDA().removeEventListener(this); // stop listening
+						stopjoc(event.getJDA()); // stop listening
 					}
 				}
 				
@@ -105,25 +104,30 @@ public class ChessListener extends ListenerAdapter{
 	}
 	 
 	
-	public static Move generaremutare(String caractere) {	//transforma un string de forma "e2e4" in obiectul Move respectiv
+	public Move generaremutare(String caractere) {	//transforma un string de forma "e2e4" in obiectul Move respectiv
 		
-		String inceput = caractere.substring(0, 1).toUpperCase() + caractere.substring(1, 2);	//Capitalizeza primul caracter
-		String destinatie = caractere.substring(2, 3).toUpperCase() + caractere.substring(3);
+		Move m = null;
 		
 		//System.out.println(inceput+destinatie);
+		try {
+		String inceput = caractere.substring(0, 1).toUpperCase() + caractere.substring(1, 2);	//Capitalizeza primul caracter
+		String destinatie = caractere.substring(2, 3).toUpperCase() + caractere.substring(3);
+		m = new Move(Square.fromValue(inceput), Square.fromValue(destinatie));
 		
-		Move m = new Move(Square.fromValue(inceput), Square.fromValue(destinatie));
+		} catch(Exception e) {
+			
+		}
+		
 		return m;
 		
 	}
 	
-	public static boolean validaremutare(Move m, Board b){
+	public boolean validaremutare(Move m, Board b){
 		 MoveList moves = null;
 		 try {
 			moves = MoveGenerator.generateLegalMoves(b);
 		} catch (MoveGeneratorException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			System.out.println("VALIDAREMUTARE FAIL");
 		}
 	        if(moves.contains(m)) {
@@ -159,10 +163,30 @@ public class ChessListener extends ListenerAdapter{
     }
     
     public void trimitereimagine(MessageReceivedEvent event) {
-		img.updateTable(matrice(board.toString()));
-		img.salvare(img.renderTabel(), channel.getId());
-		channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();
+		img.updateTable(matrice(board.toString()));					//update matrice
+		img.salvare(img.renderTabel(), channel.getId());			//salvare imagine
+		channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
+		
+
+    }
+    
+    public void verificari(MessageReceivedEvent event, User jucator) {
+		if(board.isDraw()) {						//conditia remiza
+			channel.sendMessage("REMIZA").queue();
+			stopjoc(event.getJDA());
+		} else if(board.isMated()) {				//conditia mat
+			channel.sendMessage("SAH MAT " + jucator.getAsMention() + " este castigator!").queue();
+			stopjoc(event.getJDA());
+		} else if(board.isKingAttacked()) {			//conditia sah
+			channel.sendMessage("Sah").queue();
+		}
     }
 	 
+    public void stopjoc(JDA jda) {
+    	d.canale.remove(channel);		//elimina canalul din lista
+    	jda.removeEventListener(this);	//elimina acest listener
+    	File f = new File("src/main/resources/img" + channel.getId() + ".png");
+    	f.delete();						//sterge fisierul
+    }
 
 }
