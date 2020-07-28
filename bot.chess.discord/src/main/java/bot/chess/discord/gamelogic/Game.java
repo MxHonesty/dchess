@@ -44,12 +44,38 @@ public class Game {
         	System.out.println("VALID");
         }
         else System.out.println("INVALID");
+        //System.out.println(board.toString().toCharArray());
         
-        System.out.println(board.toString());
+        String s = "";
+        char[][] b = new char[8][8];
+        b = matrice(board.toString());
+        
+        for(int i = 0; i<=7; i++) {
+    		for(int j = 0; j<=7; j++) {
+    			s+=b[i][j];
+    		}
+    		 System.out.println(s);
+    		 s = "";
+    	}
+        
+        
        
     }
     
     
+    public static char[][] matrice(String string){
+    	char[] a = string.toCharArray();
+    	char[][] b = new char[8][8];
+    	int k = 0;
+    	for(int i = 0; i<=7; i++) {
+    		for(int j = 0; j<=7; j++) {
+    			b[i][j] = a[k];
+    			k++;
+    		}
+    		k+=1;
+    	}
+    	return b;
+    }
     
 
 }

@@ -13,7 +13,7 @@ public class Image {
 	Assets assets;
     public char[][] table;
     
-
+    
     //Contructors
 	public Image(int skinNumber, int pieceScale){
 		
@@ -50,7 +50,6 @@ public class Image {
 		    }
 	    }
 	    g.dispose();
-	    
 	    return finalImage;
 	}
 	
@@ -105,6 +104,16 @@ public class Image {
 		f.setSize(new Dimension(img.getWidth(), img.getHeight() +50) );
 		f.add(jPanel);
 		f.setVisible(true);
+	}
+	
+	public void salvare(BufferedImage img, String id) {
+		File outputfile = new File("src/main/resources/img" + id + ".png");
+	    try {
+			ImageIO.write(img, "png", outputfile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 

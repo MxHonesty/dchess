@@ -45,7 +45,7 @@ public class test {
  	    
          Image image = new Image();
          image.updateTable(localTable);
-         image.renderTabel();
+        // image.renderTabel();
          image.displayImage(image.finalImage);
     }
     
