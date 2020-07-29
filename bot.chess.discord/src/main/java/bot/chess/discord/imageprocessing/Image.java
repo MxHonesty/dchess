@@ -64,7 +64,7 @@ public class Image {
 	        g.setPaint(color);
 	        g.setFont(new Font("Calibri", Font.BOLD, fontSize));
 	        
-	        String s = winnerName + "\nis the winner!";
+	        String s = winnerName +'\n'+ "is the winner!";
 	        FontMetrics fm = g.getFontMetrics();
 
 	        while ( fm.stringWidth(s) > finalImage.getWidth()/1.2f) { 	
