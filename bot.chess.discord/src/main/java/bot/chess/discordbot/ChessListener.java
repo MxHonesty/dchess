@@ -3,6 +3,8 @@ package bot.chess.discordbot;
 import java.io.File;
 
 import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.Piece;
+import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
@@ -58,8 +60,8 @@ public class ChessListener extends ListenerAdapter{
 				if(sub == 1) {
 					
 					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar1) {
-						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3)), board) == true) {	//daca mutarea data este valida
-							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3)));						//executa mutarea
+						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
+							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
 							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
 							trimitereimagine(event);																				//trimite imaginea
 							verificari(event, adversar1);
@@ -78,8 +80,8 @@ public class ChessListener extends ListenerAdapter{
 				else if(sub == 2) {
 					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar2) {
 
-						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3)), board) == true) {	//daca mutarea data este valida
-							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3)));						//executa mutarea
+						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
+							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
 							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
 							trimitereimagine(event);	
 							verificari(event, adversar2);
@@ -104,23 +106,32 @@ public class ChessListener extends ListenerAdapter{
 	}
 	 
 	
-	public Move generaremutare(String caractere) {	//transforma un string de forma "e2e4" in obiectul Move respectiv
-		
-		Move m = null;
-		
-		//System.out.println(inceput+destinatie);
-		try {
-		String inceput = caractere.substring(0, 1).toUpperCase() + caractere.substring(1, 2);	//Capitalizeza primul caracter
-		String destinatie = caractere.substring(2, 3).toUpperCase() + caractere.substring(3);
-		m = new Move(Square.fromValue(inceput), Square.fromValue(destinatie));
-		
-		} catch(Exception e) {
+		public static Move generaremutare(String caractere, Board board) {	//transforma un string de forma "e2e4" in obiectul Move respectiv
+			
+			Move m = null;
+			
+			//System.out.println(inceput+destinatie);
+			try {
+			String inceput = caractere.substring(0, 1).toUpperCase() + caractere.substring(1, 2);	//Capitalizeza primul caracter
+			String destinatie = caractere.substring(2, 3).toUpperCase() + caractere.substring(3);
+			m = new Move(Square.fromValue(inceput), Square.fromValue(destinatie));
+			
+			Square[] s = new Square[1];
+			s[0] = Square.fromValue(inceput);
+			
+			if(Board.isPromoRank(Side.WHITE, m) && board.hasPiece(Piece.WHITE_PAWN, s)) {
+				m = new Move(Square.fromValue(inceput), Square.fromValue(destinatie), Piece.WHITE_QUEEN);
+			} else if(Board.isPromoRank(Side.BLACK, m) && board.hasPiece(Piece.BLACK_PAWN, s)) {
+				m = new Move(Square.fromValue(inceput), Square.fromValue(destinatie), Piece.BLACK_QUEEN);
+			}
+			
+			} catch(Exception e) {
+				
+			}
+			
+			return m;
 			
 		}
-		
-		return m;
-		
-	}
 	
 	public boolean validaremutare(Move m, Board b){
 		 MoveList moves = null;
