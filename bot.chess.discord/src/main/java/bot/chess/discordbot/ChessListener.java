@@ -166,16 +166,20 @@ public class ChessListener extends ListenerAdapter{
 		img.updateTable(matrice(board.toString()));					//update matrice
 		img.salvare(img.renderTabel(), channel.getId());			//salvare imagine
 		channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
-		
-
     }
     
     public void verificari(MessageReceivedEvent event, User jucator) {
 		if(board.isDraw()) {						//conditia remiza
 			channel.sendMessage("REMIZA").queue();
 			stopjoc(event.getJDA());
+			
 		} else if(board.isMated()) {				//conditia mat
-			channel.sendMessage("SAH MAT " + jucator.getAsMention() + " este castigator!").queue();
+
+			img.salvare(img.presentWinner( jucator.getName() ), channel.getId());
+			//salvare imagine
+			channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
+			
+			//channel.sendMessage("SAH MAT " + jucator.getAsMention() + " este castigator!").queue();
 			stopjoc(event.getJDA());
 		} else if(board.isKingAttacked()) {			//conditia sah
 			channel.sendMessage("Sah").queue();
