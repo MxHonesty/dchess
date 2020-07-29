@@ -53,6 +53,39 @@ public class Image {
 	    return finalImage;
 	}
 	
+	public BufferedImage presentWinner(String winnerName ) {
+		
+		if(finalImage != null) {
+	  
+		    Graphics2D g = finalImage.createGraphics();
+			int fontSize = 100;
+		    Color color =  Color.decode("#ff9900");
+		    
+	        g.setPaint(color);
+	        g.setFont(new Font("Calibri", Font.BOLD, fontSize));
+	        
+	        String s = winnerName +'\n'+ "is the winner!";
+	        FontMetrics fm = g.getFontMetrics();
+
+	        while ( fm.stringWidth(s) > finalImage.getWidth()/1.2f) { 	
+	        	fontSize-=10;
+		        g.setFont(new Font("Calibri", Font.BOLD, fontSize));
+		        fm = g.getFontMetrics();
+	        }
+	        
+	        int x = finalImage.getWidth()/2 - fm.stringWidth(s)/2;
+	        int y = finalImage.getHeight()/2;
+	        
+	        g.drawString(s, x, y); 
+		    
+		    //g.drawImage(winneravatar, 0, 0, null);
+		    g.dispose();
+
+		}
+		return finalImage;
+
+	}
+	
 	public void updateTable( char[][] updatedTable) {
 	    for(int f1 = 0; f1 < 8 ; f1++) {
 	        for(int f2 = 0; f2 < 8 ; f2++) {
