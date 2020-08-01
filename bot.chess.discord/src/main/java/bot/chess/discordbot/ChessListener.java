@@ -186,11 +186,11 @@ public class ChessListener extends ListenerAdapter{
 			
 		} else if(board.isMated()) {				//conditia mat
 
-			img.salvare(img.presentWinner( jucator.getName() ), channel.getId());
+			//img.salvare(img.presentWinner( jucator.getName() ), channel.getId());
 			//salvare imagine
-			channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
+			//channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
 			
-			//channel.sendMessage("SAH MAT " + jucator.getAsMention() + " este castigator!").queue();
+			channel.sendMessage("SAH MAT " + jucator.getAsMention() + " este castigator!").queue();
 			stopjoc(event.getJDA());
 		} else if(board.isKingAttacked()) {			//conditia sah
 			channel.sendMessage("Sah").queue();
