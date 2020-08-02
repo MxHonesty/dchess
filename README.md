@@ -1,1 +1,5 @@
 # dchess
+
+Dchess is a Discord bot for playing chess. The game takes place inside a text channel on a server. The moves are commited to the game using a special command : “!m” followed by the move described in terms of the origin and destination squares: “!m e2e4”. The match is initialized using the command "!chess @player" followed by the confirmation from the second player "!accept" in the same text channel.
+
+This bot has been written fully in java using the help of two important libraries. The first one is JDA (https://github.com/DV8FromTheWorld/JDA), which is a wrapper for the Discord API. The second one is chesslib (https://github.com/bhlangonijr/chesslib) which we used for the game logic. In order to transmit the state of the board to the players, the bot generates an image from the current position of each piece and sends it to the channel the games takes place in. Each game initializes it’s own event listener and takes over a channel. This means that many games can take place at once but two games can’t happen in the same channel at the same time.
