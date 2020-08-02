@@ -92,7 +92,7 @@ public class ChessListener extends ListenerAdapter{
 						}
 
 				}
-					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {
+					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar2) {
 						channel.sendMessage(adversar2.getName() + " a renuntat!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
