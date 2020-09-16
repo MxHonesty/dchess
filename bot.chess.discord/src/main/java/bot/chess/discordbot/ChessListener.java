@@ -1,7 +1,7 @@
 package bot.chess.discordbot;
 
 import java.io.File;
-
+import java.io.IOException;
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.Side;
@@ -51,7 +51,7 @@ public class ChessListener extends ListenerAdapter{
 					if(event.getMessage().getContentDisplay().startsWith("!accept")) {	//daca comanda de acceptare este trimisa		
 						event.getChannel().sendMessage("Un meci a inceput intre " + adversar1.getName() + " si " + adversar2.getName()).queue();
 						acceptat = 1;
-						trimitereimagine(event);
+						trimitereimagine();
 					}
 				}
 			}
@@ -63,7 +63,7 @@ public class ChessListener extends ListenerAdapter{
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
 							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
 							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
-							trimitereimagine(event);																				//trimite imaginea
+							trimitereimagine();																				//trimite imaginea
 							verificari(event, adversar1);
 							sub=2;
 						} else {
@@ -83,7 +83,7 @@ public class ChessListener extends ListenerAdapter{
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
 							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
 							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
-							trimitereimagine(event);	
+							trimitereimagine();	
 							verificari(event, adversar2);
 							sub=1;
 							turn++;
@@ -173,10 +173,22 @@ public class ChessListener extends ListenerAdapter{
     	return b;
     }
     
-    public void trimitereimagine(MessageReceivedEvent event) {
+    public void trimitereimagine() {
+    	
+    	
 		img.updateTable(matrice(board.toString()));					//update matrice
-		img.salvare(img.renderTabel(), channel.getId());			//salvare imagine
-		channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
+		
+		
+		//img.salvare(img.renderTabel(), channel.getId());			//salvare imagine
+		//channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
+		
+		
+		try {
+			channel.sendFile(img.BufferedtoArray(img.renderTabel()), "image.png").queue();	//trimite byte[] generat din BufferedImage
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void verificari(MessageReceivedEvent event, User jucator) {

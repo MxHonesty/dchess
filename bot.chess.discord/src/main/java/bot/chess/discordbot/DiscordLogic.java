@@ -1,6 +1,5 @@
 package bot.chess.discordbot;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class DiscordLogic extends ListenerAdapter{
 
     public static void main(String[] args)
             throws LoginException{		//initializare
-        JDA jda = new JDABuilder("NzU0MDAyNTExNDI1NDM3ODA3.X1uZjw.IFcLbFtnTv6jKqWi3FM4heOjJAQ").build();
+        JDA jda = new JDABuilder("TOKEN").build();
 
         jda.addEventListener(new DiscordLogic());
         //jda.addEventListener(new Commands());

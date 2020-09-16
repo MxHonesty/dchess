@@ -148,6 +148,22 @@ public class Image {
 			e.printStackTrace();
 		}
 	}
+	
+	public byte[] BufferedtoArray(BufferedImage t1) throws IOException {
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write( t1, "png", baos );
+			baos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		byte[] imageInByte = baos.toByteArray();
+		baos.close();
+		return imageInByte;
+	}
 }
 
 class Assets {
