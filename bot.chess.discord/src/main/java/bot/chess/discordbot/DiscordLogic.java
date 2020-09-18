@@ -24,7 +24,7 @@ public class DiscordLogic extends ListenerAdapter{
     public static void main(String[] args)
             throws LoginException{		//initializare
     	
-        JDA jda = new JDABuilder("NzU0MDAyNTExNDI1NDM3ODA3.X1uZjw.DDa8d7bAUoxqpNGWA293hQsGMIg").build();
+        JDA jda = new JDABuilder("TOKEN").build();
        
         // Playing status
         jda.getPresence().setActivity(Activity.playing("chess | "+ DiscordLogic.prefix + "help"));
