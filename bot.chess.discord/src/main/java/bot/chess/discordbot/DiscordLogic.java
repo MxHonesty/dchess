@@ -8,6 +8,7 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -22,7 +23,11 @@ public class DiscordLogic extends ListenerAdapter{
 
     public static void main(String[] args)
             throws LoginException{		//initializare
-        JDA jda = new JDABuilder("TOKEN").build();
+    	
+        JDA jda = new JDABuilder("NzU0MDAyNTExNDI1NDM3ODA3.X1uZjw.DDa8d7bAUoxqpNGWA293hQsGMIg").build();
+       
+        // Playing status
+        jda.getPresence().setActivity(Activity.playing("chess | "+ DiscordLogic.prefix + "help"));
 
         jda.addEventListener(new DiscordLogic());
         //jda.addEventListener(new Commands());
@@ -34,6 +39,7 @@ public class DiscordLogic extends ListenerAdapter{
 
     @Override
     public void onReady(ReadyEvent event){
+    	
     	System.out.println("\n\n-------------------Bot Debug-------------------\n\n");
     }
 
