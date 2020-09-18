@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -15,13 +16,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class DiscordLogic extends ListenerAdapter{
 
-	public static String prefix = "!";
+	public static String prefix = "%";
 
 	public List<MessageChannel> canale = new ArrayList<MessageChannel>();
 
     public static void main(String[] args)
             throws LoginException{		//initializare
-
         JDA jda = new JDABuilder("TOKEN").build();
 
         jda.addEventListener(new DiscordLogic());
@@ -52,6 +52,9 @@ public class DiscordLogic extends ListenerAdapter{
 			{
 				Joc(event.getMessage().getAuthor(),event.getMessage().getMentionedUsers().get(0),event); // incepe jocul si extrage cei 2 playeri
 			}
+		} 
+		else if(args[0].equalsIgnoreCase(DiscordLogic.prefix + "help")){
+			Help_Embed(event);
 		}
 	}
 
@@ -69,6 +72,28 @@ public class DiscordLogic extends ListenerAdapter{
 		}
 
 
+	}
+	
+	public void Help_Embed(MessageReceivedEvent event)
+	{
+		EmbedBuilder table = new EmbedBuilder(); //Builderul de embed
+		table.setColor(0x0576ff);
+		
+		table.setTitle("DChess Help", null);
+		table.setAuthor("DChess Bot", null, "https://images-platform.99static.com//CkCMRlE5Gvmkr65u_pZ1hXLFzyM=/100x100:900x900/fit-in/500x500/99designs-contests-attachments/116/116527/attachment_116527796");
+		
+		table.addField("Sending a game request", DiscordLogic.prefix + "chess <Mention Other Player>", false);
+		
+		table.addField("Accepting a game request", DiscordLogic.prefix + "accept", false);
+		
+		table.addField("Executing a move", DiscordLogic.prefix + "m <starting square><destination square> (" + DiscordLogic.prefix + 
+				"m e2e4)", false);
+		
+		table.addField("Surrender", DiscordLogic.prefix + "stop", false);
+		
+		
+		event.getChannel().sendMessage(table.build()).queue(); //construim tabla
+		
 	}
 
 

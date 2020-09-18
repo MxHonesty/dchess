@@ -148,6 +148,22 @@ public class Image {
 			e.printStackTrace();
 		}
 	}
+	
+	public byte[] BufferedtoArray(BufferedImage t1) throws IOException {
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write( t1, "png", baos );
+			baos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		byte[] imageInByte = baos.toByteArray();
+		baos.close();
+		return imageInByte;
+	}
 }
 
 class Assets {
@@ -258,27 +274,27 @@ class Skin {
 			  	bottomRightRoot = new Vector2(405,405);
 
 			  	//Images
-				chessTablePath = "src/main/resources/skin1/chessboard.png";
+				chessTablePath = "/skin1/chessboard.png";
 				//White pieces
-				rookWhitePath = "src/main/resources/skin1/whiteRook.png";
-				knightWhitePath = "src/main/resources/skin1/whiteKnight.png";
-				bishopWhitePath = "src/main/resources/skin1/whiteBishop.png";
-				queenWhitePath = "src/main/resources/skin1/whiteQueen.png";
-				kingWhitePath = "src/main/resources/skin1/whiteKing.png";
-				pawnWhitePath = "src/main/resources/skin1/whitePawn.png";
+				rookWhitePath = "/skin1/whiteRook.png";
+				knightWhitePath = "/skin1/whiteKnight.png";
+				bishopWhitePath = "/skin1/whiteBishop.png";
+				queenWhitePath = "/skin1/whiteQueen.png";
+				kingWhitePath = "/skin1/whiteKing.png";
+				pawnWhitePath = "/skin1/whitePawn.png";
 
 				//Black pieces
-				rookBlackPath = "src/main/resources/skin1/blackRook.png";
-				knightBlackPath = "src/main/resources/skin1/blackKnight.png";
-				bishopBlackPath = "src/main/resources/skin1/blackBishop.png";
-				queenBlackPath = "src/main/resources/skin1/blackQueen.png";
-				kingBlackPath = "src/main/resources/skin1/blackKing.png";
-				pawnBlackPath = "src/main/resources/skin1/blackPawn.png";
+				rookBlackPath = "/skin1/blackRook.png";
+				knightBlackPath = "/skin1/blackKnight.png";
+				bishopBlackPath = "/skin1/blackBishop.png";
+				queenBlackPath = "/skin1/blackQueen.png";
+				kingBlackPath = "/skin1/blackKing.png";
+				pawnBlackPath = "/skin1/blackPawn.png";
 		    break;
 		  default:
 		}
 		
-		errorPath = "src/main/resources/error.png";
+		errorPath = "/error.png";
 	}
 }
 
@@ -296,7 +312,7 @@ class ImageComponent extends Component {
     //Reading the image from disk
     public ImageComponent(String path) {
        try {
-          img = ImageIO.read(new File(path));
+          img = ImageIO.read(getClass().getResourceAsStream(path));
        } catch (IOException e) {
 	      System.out.print("ERROR READING IMAGE " + path);  
           e.printStackTrace();

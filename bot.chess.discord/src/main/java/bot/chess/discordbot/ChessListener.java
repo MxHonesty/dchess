@@ -1,7 +1,7 @@
 package bot.chess.discordbot;
 
 import java.io.File;
-
+import java.io.IOException;
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.Side;
@@ -48,52 +48,47 @@ public class ChessListener extends ListenerAdapter{
 		if(event.getChannel() == channel) {
 			if(acceptat == 0) {
 				if(event.getAuthor() == adversar2) {									//daca raspunsul este dat de jucatorul provocat
-					if(event.getMessage().getContentDisplay().startsWith("!accept")) {	//daca comanda de acceptare este trimisa		
-						event.getChannel().sendMessage("Un meci a inceput intre " + adversar1.getName() + " si " + adversar2.getName()).queue();
+					if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "accept")) {	//daca comanda de acceptare este trimisa		
+						event.getChannel().sendMessage("A game started between " + adversar1.getName() + " and " + adversar2.getName()).queue();
 						acceptat = 1;
-						trimitereimagine(event);
+						trimitereimagine();
 					}
 				}
 			}
-			else if (acceptat == 1) {
-				
-				if(sub == 1) {
+			else if (acceptat == 1) {	// Daca meciul a fost acceptat
 					
-					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar1) {
+				if(sub == 1) {	// Daca este randul primului jucator
+					
+					if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "m ") && event.getAuthor() == adversar1) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
+						
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
-							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
-							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
-							trimitereimagine(event);																				//trimite imaginea
-							verificari(event, adversar1);
+							turn(event, adversar1);
 							sub=2;
-						} else {
-							channel.sendMessage("Mutare Invalida").queue();
+						} else {	// Daca mutarea nu este valida
+							channel.sendMessage("Invalid Move").queue();
 						}
 						
 					}
-					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {
-						channel.sendMessage(adversar1.getName() + " a renuntat!").queue();
+					else if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "stop") && event.getAuthor()==adversar1) {	// Daca jucatorul alege comanda stop
+						channel.sendMessage(adversar1.getName() + " surrendered!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
 				}
 				
-				else if(sub == 2) {
-					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar2) {
+				else if(sub == 2) {	// Daca este randul jucatorului 2
+					if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "m ") && event.getAuthor() == adversar2) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
 
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
-							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
-							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
-							trimitereimagine(event);	
-							verificari(event, adversar2);
+							turn(event, adversar2);
 							sub=1;
 							turn++;
-						} else {
-							channel.sendMessage("Mutare Invalida").queue();
+						} else {	// Daca mutarea nu este valida
+							channel.sendMessage("Invalid Move").queue();
 						}
 
 				}
-					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar2) {
-						channel.sendMessage(adversar2.getName() + " a renuntat!").queue();
+					else if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "stop") && event.getAuthor()==adversar2) {	// Daca jucatorul alege comanda stop
+						channel.sendMessage(adversar2.getName() + " surrendered!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
 				}
@@ -105,6 +100,14 @@ public class ChessListener extends ListenerAdapter{
 		 
 	}
 	 
+	    // Handle the turn action
+	    public void turn(MessageReceivedEvent event, User adversar) {
+	    	board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));			//executa mutarea
+			System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));		//print mutare debug
+			trimitereimagine();	
+			verificari(event, adversar);
+	    	
+	    }
 	
 		public static Move generaremutare(String caractere, Board board) {	//transforma un string de forma "e2e4" in obiectul Move respectiv
 			
@@ -145,19 +148,7 @@ public class ChessListener extends ListenerAdapter{
 	        	return true;
 	        }
 	        else return false;
-	}
-	
-	public void Embedd_Constructor(MessageReceivedEvent event)
-	{
-		EmbedBuilder table = new EmbedBuilder(); //Builderul de embed
-		table.setColor(0x0576ff);
-		table.setImage("src/main/resources/img" + event.getChannel().getId()); //placeholder pt imaginea cu tabla
-		
-		event.getChannel().sendMessage(table.build()).queue(); //construim tabla
-		
-		table.clear(); //stergem tabla pentru conservarea resurselor
-	}
-	
+	}	
 	     
     public static char[][] matrice(String string){	//conversia din string[] in char[][]
     	char[] a = string.toCharArray();
@@ -173,15 +164,26 @@ public class ChessListener extends ListenerAdapter{
     	return b;
     }
     
-    public void trimitereimagine(MessageReceivedEvent event) {
+    public void trimitereimagine() {
+    	
 		img.updateTable(matrice(board.toString()));					//update matrice
-		img.salvare(img.renderTabel(), channel.getId());			//salvare imagine
-		channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
+		
+		
+		//img.salvare(img.renderTabel(), channel.getId());			//salvare imagine
+		//channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
+		
+		
+		try {
+			channel.sendFile(img.BufferedtoArray(img.renderTabel()), "image.png").queue();	//trimite byte[] generat din BufferedImage
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void verificari(MessageReceivedEvent event, User jucator) {
 		if(board.isDraw()) {						//conditia remiza
-			channel.sendMessage("REMIZA").queue();
+			channel.sendMessage("DRAW").queue();
 			stopjoc(event.getJDA());
 			
 		} else if(board.isMated()) {				//conditia mat
@@ -190,10 +192,10 @@ public class ChessListener extends ListenerAdapter{
 			//salvare imagine
 			//channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
 			
-			channel.sendMessage("SAH MAT " + jucator.getAsMention() + " este castigator!").queue();
+			channel.sendMessage("CHECKMATE " + jucator.getAsMention() + " is the winner!").queue();
 			stopjoc(event.getJDA());
 		} else if(board.isKingAttacked()) {			//conditia sah
-			channel.sendMessage("Sah").queue();
+			channel.sendMessage("CHECK").queue();
 		}
     }
 	 
@@ -203,5 +205,5 @@ public class ChessListener extends ListenerAdapter{
     	File f = new File("src/main/resources/img" + channel.getId() + ".png");
     	f.delete();						//sterge fisierul
     }
-
 }
+
