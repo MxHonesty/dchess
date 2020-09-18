@@ -48,8 +48,8 @@ public class ChessListener extends ListenerAdapter{
 		if(event.getChannel() == channel) {
 			if(acceptat == 0) {
 				if(event.getAuthor() == adversar2) {									//daca raspunsul este dat de jucatorul provocat
-					if(event.getMessage().getContentDisplay().startsWith("!accept")) {	//daca comanda de acceptare este trimisa		
-						event.getChannel().sendMessage("Un meci a inceput intre " + adversar1.getName() + " si " + adversar2.getName()).queue();
+					if(event.getMessage().getContentDisplay().startsWith("%accept")) {	//daca comanda de acceptare este trimisa		
+						event.getChannel().sendMessage("A game started between " + adversar1.getName() + " and " + adversar2.getName()).queue();
 						acceptat = 1;
 						trimitereimagine();
 					}
@@ -59,36 +59,36 @@ public class ChessListener extends ListenerAdapter{
 					
 				if(sub == 1) {	// Daca este randul primului jucator
 					
-					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar1) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
+					if(event.getMessage().getContentDisplay().startsWith("%m ") && event.getAuthor() == adversar1) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
 						
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
 							turn(event, adversar1);
 							sub=2;
 						} else {	// Daca mutarea nu este valida
-							channel.sendMessage("Mutare Invalida").queue();
+							channel.sendMessage("Invalid Move").queue();
 						}
 						
 					}
-					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {	// Daca jucatorul alege comanda stop
-						channel.sendMessage(adversar1.getName() + " a renuntat!").queue();
+					else if(event.getMessage().getContentDisplay().startsWith("%stop") && event.getAuthor()==adversar1) {	// Daca jucatorul alege comanda stop
+						channel.sendMessage(adversar1.getName() + " surrendered!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
 				}
 				
 				else if(sub == 2) {	// Daca este randul jucatorului 2
-					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar2) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
+					if(event.getMessage().getContentDisplay().startsWith("%m ") && event.getAuthor() == adversar2) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
 
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
 							turn(event, adversar2);
 							sub=1;
 							turn++;
 						} else {	// Daca mutarea nu este valida
-							channel.sendMessage("Mutare Invalida").queue();
+							channel.sendMessage("Invalid Move").queue();
 						}
 
 				}
-					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar2) {	// Daca jucatorul alege comanda stop
-						channel.sendMessage(adversar2.getName() + " a renuntat!").queue();
+					else if(event.getMessage().getContentDisplay().startsWith("%stop") && event.getAuthor()==adversar2) {	// Daca jucatorul alege comanda stop
+						channel.sendMessage(adversar2.getName() + " surrendered!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
 				}
@@ -195,7 +195,7 @@ public class ChessListener extends ListenerAdapter{
     
     public void verificari(MessageReceivedEvent event, User jucator) {
 		if(board.isDraw()) {						//conditia remiza
-			channel.sendMessage("REMIZA").queue();
+			channel.sendMessage("DRAW").queue();
 			stopjoc(event.getJDA());
 			
 		} else if(board.isMated()) {				//conditia mat
@@ -204,10 +204,10 @@ public class ChessListener extends ListenerAdapter{
 			//salvare imagine
 			//channel.sendFile(new File("src/main/resources/img" + channel.getId() + ".png")).queue();	//trimitere fisier pe discord
 			
-			channel.sendMessage("SAH MAT " + jucator.getAsMention() + " este castigator!").queue();
+			channel.sendMessage("CHECKMATE " + jucator.getAsMention() + " is the winner!").queue();
 			stopjoc(event.getJDA());
 		} else if(board.isKingAttacked()) {			//conditia sah
-			channel.sendMessage("Sah").queue();
+			channel.sendMessage("CHECK").queue();
 		}
     }
 	 

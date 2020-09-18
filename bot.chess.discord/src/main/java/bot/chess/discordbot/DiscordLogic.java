@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class DiscordLogic extends ListenerAdapter{
 
-	public static String prefix = "!";
+	public static String prefix = "%";
 
 	public List<MessageChannel> canale = new ArrayList<MessageChannel>();
 
