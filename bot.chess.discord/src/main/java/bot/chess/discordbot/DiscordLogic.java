@@ -21,7 +21,7 @@ public class DiscordLogic extends ListenerAdapter{
 
     public static void main(String[] args)
             throws LoginException{		//initializare
-        JDA jda = new JDABuilder("TOKEN").build();
+        JDA jda = new JDABuilder("NzM5OTYwNjI4NTU4NTYxMzM0.XyiECQ.ZnZdzLlaFZlaHgudccjCSV4K5HU").build();
 
         jda.addEventListener(new DiscordLogic());
         //jda.addEventListener(new Commands());

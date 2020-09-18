@@ -55,44 +55,39 @@ public class ChessListener extends ListenerAdapter{
 					}
 				}
 			}
-			else if (acceptat == 1) {
-				
-				if(sub == 1) {
+			else if (acceptat == 1) {	// Daca meciul a fost acceptat
 					
-					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar1) {
+				if(sub == 1) {	// Daca este randul primului jucator
+					
+					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar1) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
+						
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
-							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
-							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
-							trimitereimagine();																				//trimite imaginea
-							verificari(event, adversar1);
+							turn(event, adversar1);
 							sub=2;
-						} else {
+						} else {	// Daca mutarea nu este valida
 							channel.sendMessage("Mutare Invalida").queue();
 						}
 						
 					}
-					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {
+					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar1) {	// Daca jucatorul alege comanda stop
 						channel.sendMessage(adversar1.getName() + " a renuntat!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
 				}
 				
-				else if(sub == 2) {
-					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar2) {
+				else if(sub == 2) {	// Daca este randul jucatorului 2
+					if(event.getMessage().getContentDisplay().startsWith("!m ") && event.getAuthor() == adversar2) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
 
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
-							board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));						//executa mutarea
-							System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));			//print mutare debug
-							trimitereimagine();	
-							verificari(event, adversar2);
+							turn(event, adversar2);
 							sub=1;
 							turn++;
-						} else {
+						} else {	// Daca mutarea nu este valida
 							channel.sendMessage("Mutare Invalida").queue();
 						}
 
 				}
-					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar2) {
+					else if(event.getMessage().getContentDisplay().startsWith("!stop") && event.getAuthor()==adversar2) {	// Daca jucatorul alege comanda stop
 						channel.sendMessage(adversar2.getName() + " a renuntat!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
@@ -105,6 +100,14 @@ public class ChessListener extends ListenerAdapter{
 		 
 	}
 	 
+	    // Handle the turn action
+	    public void turn(MessageReceivedEvent event, User adversar) {
+	    	board.doMove(generaremutare(event.getMessage().getContentDisplay().substring(3), board));			//executa mutarea
+			System.out.println("Mutare executata " + event.getMessage().getContentDisplay().substring(3));		//print mutare debug
+			trimitereimagine();	
+			verificari(event, adversar);
+	    	
+	    }
 	
 		public static Move generaremutare(String caractere, Board board) {	//transforma un string de forma "e2e4" in obiectul Move respectiv
 			
@@ -175,7 +178,6 @@ public class ChessListener extends ListenerAdapter{
     
     public void trimitereimagine() {
     	
-    	
 		img.updateTable(matrice(board.toString()));					//update matrice
 		
 		
@@ -215,5 +217,5 @@ public class ChessListener extends ListenerAdapter{
     	File f = new File("src/main/resources/img" + channel.getId() + ".png");
     	f.delete();						//sterge fisierul
     }
-
 }
+
