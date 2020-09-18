@@ -48,7 +48,7 @@ public class ChessListener extends ListenerAdapter{
 		if(event.getChannel() == channel) {
 			if(acceptat == 0) {
 				if(event.getAuthor() == adversar2) {									//daca raspunsul este dat de jucatorul provocat
-					if(event.getMessage().getContentDisplay().startsWith("%accept")) {	//daca comanda de acceptare este trimisa		
+					if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "accept")) {	//daca comanda de acceptare este trimisa		
 						event.getChannel().sendMessage("A game started between " + adversar1.getName() + " and " + adversar2.getName()).queue();
 						acceptat = 1;
 						trimitereimagine();
@@ -59,7 +59,7 @@ public class ChessListener extends ListenerAdapter{
 					
 				if(sub == 1) {	// Daca este randul primului jucator
 					
-					if(event.getMessage().getContentDisplay().startsWith("%m ") && event.getAuthor() == adversar1) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
+					if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "m ") && event.getAuthor() == adversar1) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
 						
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
 							turn(event, adversar1);
@@ -69,14 +69,14 @@ public class ChessListener extends ListenerAdapter{
 						}
 						
 					}
-					else if(event.getMessage().getContentDisplay().startsWith("%stop") && event.getAuthor()==adversar1) {	// Daca jucatorul alege comanda stop
+					else if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "stop") && event.getAuthor()==adversar1) {	// Daca jucatorul alege comanda stop
 						channel.sendMessage(adversar1.getName() + " surrendered!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
 				}
 				
 				else if(sub == 2) {	// Daca este randul jucatorului 2
-					if(event.getMessage().getContentDisplay().startsWith("%m ") && event.getAuthor() == adversar2) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
+					if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "m ") && event.getAuthor() == adversar2) {	// Verifica daca autorul mesajului este cel potrivit si prefixul
 
 						if(validaremutare(generaremutare(event.getMessage().getContentDisplay().substring(3), board), board) == true) {	//daca mutarea data este valida
 							turn(event, adversar2);
@@ -87,7 +87,7 @@ public class ChessListener extends ListenerAdapter{
 						}
 
 				}
-					else if(event.getMessage().getContentDisplay().startsWith("%stop") && event.getAuthor()==adversar2) {	// Daca jucatorul alege comanda stop
+					else if(event.getMessage().getContentDisplay().startsWith(DiscordLogic.prefix + "stop") && event.getAuthor()==adversar2) {	// Daca jucatorul alege comanda stop
 						channel.sendMessage(adversar2.getName() + " surrendered!").queue();
 						stopjoc(event.getJDA()); // stop listening
 					}
@@ -148,19 +148,7 @@ public class ChessListener extends ListenerAdapter{
 	        	return true;
 	        }
 	        else return false;
-	}
-	
-	public void Embedd_Constructor(MessageReceivedEvent event)
-	{
-		EmbedBuilder table = new EmbedBuilder(); //Builderul de embed
-		table.setColor(0x0576ff);
-		table.setImage("src/main/resources/img" + event.getChannel().getId()); //placeholder pt imaginea cu tabla
-		
-		event.getChannel().sendMessage(table.build()).queue(); //construim tabla
-		
-		table.clear(); //stergem tabla pentru conservarea resurselor
-	}
-	
+	}	
 	     
     public static char[][] matrice(String string){	//conversia din string[] in char[][]
     	char[] a = string.toCharArray();
