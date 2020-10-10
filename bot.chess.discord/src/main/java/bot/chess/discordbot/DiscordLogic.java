@@ -34,11 +34,11 @@ public class DiscordLogic extends ListenerAdapter{
         
         new DefaultShardManagerBuilder()
         	.setToken("NzM5OTYwNjI4NTU4NTYxMzM0.XyiECQ.NPeZD1N26N52gOmW4G-jdspAHcc")
-	        .setShardsTotal(2)
-	        .setActivity(Activity.playing("chess | "+ DiscordLogic.prefix + "help"))
+	        .setShardsTotal(5)
+	        .setActivity(Activity.playing("chess | " + DiscordLogic.prefix + "help"))
 	        .addEventListeners(new DiscordLogic())
 	        .build();
-
+        
     }
 
 
