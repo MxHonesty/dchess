@@ -72,6 +72,7 @@ public class Game {
     
     
     public static char[][] matrice(String string){
+    	//Converteste un String intr-o matrice de char
     	char[] a = string.toCharArray();
     	char[][] b = new char[8][8];
     	int k = 0;

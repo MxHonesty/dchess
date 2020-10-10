@@ -109,8 +109,8 @@ public class ChessListener extends ListenerAdapter{
 	    	
 	    }
 	
-		public static Move generaremutare(String caractere, Board board) {	//transforma un string de forma "e2e4" in obiectul Move respectiv
-			
+		public static Move generaremutare(String caractere, Board board) {	
+			//transforma un string de forma "e2e4" in obiectul Move respectiv
 			Move m = null;
 			
 			//System.out.println(inceput+destinatie);
@@ -137,6 +137,8 @@ public class ChessListener extends ListenerAdapter{
 		}
 	
 	public boolean validaremutare(Move m, Board b){
+		// Daca mutarea m din masa b este valida returneaza True
+		// Altfel returneaza false
 		 MoveList moves = null;
 		 try {
 			moves = MoveGenerator.generateLegalMoves(b);
@@ -165,6 +167,7 @@ public class ChessListener extends ListenerAdapter{
     }
     
     public void trimitereimagine() {
+    	// Trimite imaginea generata in canalul corespunzator meciului
     	
 		img.updateTable(matrice(board.toString()));					//update matrice
 		

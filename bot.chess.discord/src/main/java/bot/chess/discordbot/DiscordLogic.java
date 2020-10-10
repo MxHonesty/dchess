@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 
 public class DiscordLogic extends ListenerAdapter{
 
@@ -24,16 +25,20 @@ public class DiscordLogic extends ListenerAdapter{
     public static void main(String[] args)
             throws LoginException{		//initializare
     	
-        JDA jda = new JDABuilder("TOKEN").build();
+        //JDA jda = new JDABuilder("NzU0MDAyNTExNDI1NDM3ODA3.X1uZjw.eaAISHOqUtG6pXuuBiY_KjJh_0Y").build();
        
         // Playing status
-        jda.getPresence().setActivity(Activity.playing("chess | "+ DiscordLogic.prefix + "help"));
+        //jda.getPresence().setActivity(Activity.playing("chess | "+ DiscordLogic.prefix + "help"));
 
-        jda.addEventListener(new DiscordLogic());
-        //jda.addEventListener(new Commands());
-
-        //jda.getPresence().setActivity(Activity.playing("Chess"));
-
+        //jda.addEventListener(new DiscordLogic());
+        
+        new DefaultShardManagerBuilder()
+        	.setToken("NzM5OTYwNjI4NTU4NTYxMzM0.XyiECQ.NPeZD1N26N52gOmW4G-jdspAHcc")
+	        .setActivity(Activity.playing("chess | " + DiscordLogic.prefix + "help"))
+	        .addEventListeners(new DiscordLogic())
+	        .build();
+        //.setShardsTotal(5)
+        
     }
 
 
